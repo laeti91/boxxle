@@ -5,15 +5,90 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="./style.css">
-        <title>Boxxle.io</title>
+        <title>Boxxle - Frodo's Birthday Banquet</title>
     </head>
 
     <body>
-        <div id="gameboard">
+        <!--contient la page du jeu-->
+        <div class="gameContainer">
+            <h1>Frodo's Birthday Banquet</h1>
+            <p id="subtitle">Help Frodo guide his friends to Bilbo's party!</p>
+
+            <!--fonction général du jeu-->
+            <div id="controls">
+                <button onclick="resetLevel()">Reset Level</button>
+                <button onclick="window.initLevel(0)">Level 1</button>
+                <button onclick="window.nextLevel()">Next Level</button>
+            </div>
+
+            <div id="gameBoard"> 
+                <!--création dynamique des cellules de la grille-->
+            </div>
+
+            <!--état actuel du jeu-->
+            <div id="gameStatus">
+                <div class="statusType">
+                    <span class="statusLabel">Level: </span>
+                    <span id="levelDisplay" class="statusValue">1</span>
+                </div>
+                <div class="statusType">
+                    <span class="statusLabel">Steps: </span>
+                    <span id="stepDisplay" class="statusValue">0</span>
+                </div>
+                <div class="statusType">
+                    <span class="statusLabel">Friends on Table: </span>
+                    <span id="friendDisplay" class="statusValue">0/3</span>
+                </div>
+            </div>
+
+            <!--touche de clavier-->
+            <div class="keysControl">
+                <h3>Controls</h3>
+                <div class="controlsGrid">
+                    <div class="controlButton">↑</div>
+                    <div class="controlButton">←</div>
+                    <div class="controlButton">→</div>
+                    <div class="controlButton">↓</div>
+                </div>
+            </div>
+
+            <!--sénario du jeu-->
+            <div id="info">
+                <p>🇬🇧 Hey Frodo! Welcome to Bilbo's party! <br>
+                Sam, Merry, and Pippin are lost (again 😅) help them reach the feast before all the cake is gone!
+                But be careful, one wrong move and… chaos!
+                Use the arrow keys and go!
+                🎉 Adventure (and food) await!
+                </p>
+                <p>🇫🇷 Hé Frodo ! Bienvenue à la fête de Bilbo! <br>
+                Sam, Merry et Pippin sont perdus (encore 😅) aide-les à rejoindre le banquet avant qu'il n'y ait plus de gâteau!
+                Mais attention, un pas de travers et… c'est le bazar.
+                Utilise les flèches du clavier et fonce!
+                🍰 L'aventure t'appelle (et la nourriture aussi)!
+                </p>
+            </div>
+
+            <!--légende du jeu-->
+            <div id="legend">
+                <h3>Legend</h3>
+                <div id="legendGrid">
+                    <div class="legendItem">Frodo (you)</div>
+                    <div class="legendItem">Friends to move (package)</div>
+                    <div class="legendItem">Banquet tables (target)</div>
+                    <div class="legendItem">Tree (wall)</div>
+                    <div class="legendItem">Road (floor)</div>
+                </div>
+            </div>
+
+            <!--débug console caché-->
+            <div id="debugInfo" class="debug" style="display: none;">
+                <div>Niveau: <span id="levelDisplay">1</span></div>
+                <div>Pas: <span id="stepDisplay">0</span></div>
+                <div>Ami sur la cible: <span id="friendDisplay">0/3</span></div>
+            </div>
         </div>
 
-        <script type= "module" src="./index.js"></script>
-        <script type="module" src="./levels.js"></script>
+        <script type="module" defer src="./index.js"></script>
     </body>
 
 </html>

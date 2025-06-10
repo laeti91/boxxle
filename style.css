@@ -1,16 +1,275 @@
+*{
+    margin: 0;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
 body {
-    background: rgb(176, 149, 30);
+    background-color: rgb(0, 0, 0);
+    font-family: Arial, Helvetica, sans-serif;
+    color: #f4e4bc;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
 }
 
-#gameboard{
-    width: auto;
-    position: absolute;
+/*LE CONTENANT DU JEU*/
+.gameContainer{
+    width: 100%;
+    max-width: 1000px;
+    padding: 30px;
+    margin: 20px;
+    background-color: #d4efd6;
+    border: 3px solid blur(#ffffff47);
+    border-radius: 20px;
+    box-shadow: 0 0 30px #00000006;
+    color: #2d4a3e;
+}
+
+.gameContainer h1{
+    text-align: center;
+    color: #2d4a3e;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#subtitle{
+    text-align: center;
+    color: #4a6b4d;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+/*FONCTION GÉNÉRAL DU JEU*/
+#controls{
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+#controls div{
+    background: #2d4a3e;
+    color: #f4e4bc;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 2px solid #4a6b4d;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#controls div:hover{
+    background: #4a6b4d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/*ETAT ACTUEL DU JEU*/
+.gameStatus{
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+    border: 2px solid #4a6b4d;
+    border-radius: 10px;
+    padding: 15px;
+    background: rgba(45, 75, 62, 0.1);
+}
+
+.statusType{
+    text-align: center;
+}
+
+.statusLabel{
+    display: block;
+    font-size: 0.9rem;
+    color: #4a6b4d;
+    margin-bottom: 5px;
+}
+
+.statusValue{
+    display: block;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #2d4a3e;
+}
+
+/*TOUCHES DU CLAVIER*/
+.keysControls{
+    background: rgba(45, 75, 62, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    margin: 15px 0;
+    border: 1px solid #4a6b4d;
+}
+
+.keysControls h3{
+    color: #2d4a3e;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.controlsGrid{
     display: grid;
-    grid-template-columns: repeat(10, 4vw);
-    grid-template-rows: repeat(10, 4vw);
+    grid-template-columns: repeat(auto-fit, min-max(200px, 1fr));
+    gap: 8px;
 }
 
-#gameboard>div{
-    position: absolute;
-    height: 4vw;
+.controlButton{
+    background: rgba(255, 255, 255, 0.3);
+    padding: 8px 12px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 0.9rem;
+    border: 1px solid rgba(45, 75, 62, 0.2);
+}
+
+/*LÉGENDE DU JEU*/
+#legend{
+    background: rgba(45, 75, 62, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    margin: 15px 0;
+    border: 1px solid #4a6b4d;
+}
+
+#legend h3{
+    color: #2d4a3e;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#legendGrid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 8px;
+}
+
+.legendItem{
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(45, 75, 62, 0.2);
+    border-radius: 5px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/*GRILLE DU JEU*/
+#gameBoard{
+    height: 500px;
+    width: 100%;
+    position: relative;
+    display: grid;
+    gap: 1px;
+    border: 3px solid #2d4a3e;
+    border-radius: 10px;
+    background: #4a6b4d;
+    margin: 20px 0;
+    padding: 10px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/*LES CELLULES DU JEU*/
+.cell{
+    background: #5a7b5d;
+    border: 1px solid #163817;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    transition: all 0.2s ease;
+    border-radius: 3px;
+    position: relative;
+}
+
+.cell.tree{
+    background: #d4efd6;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+.cell.target{
+    background: #f47e75;
+    border: 2px solid #163817;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+@keyframes glow {
+    from {
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+    to {
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+    }
+}
+
+.cell.frodo{
+    background: #e7d852;
+    border: 2px solid #163817;
+    z-index: 10;
+    box-shadow: 0 0 15px rgba(255, 99, 71, 0.7);
+    transform: scale(1.1);
+}
+.cell.friend{
+    background: #e7bce7;
+    border: 2px solid #163817;
+    box-shadow: 0 0 8px rgba(221, 160, 221, 0.5);
+}
+.cell.empty{
+    background: #2e5f30;
+    border-color: #2d4a3e;
+    z-index: -10;
+}
+
+/*INFORMATIONS DU JEU*/
+#info{
+    background: rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    margin: 15px 0;
+    border: 1px solid #163817;
+}
+
+#info p{
+    margin: 10px 0;
+    line-height: 1.6;
+    font-size: 0.9rem;
+    text-align: justify;
+}
+
+/*RESPONSIVE*/
+@media (max-width: 768px) {
+    .gameContainer{
+        margin: 10px;
+        padding: 20px;
+    }
+    #gameBoard{
+        height: 400px;
+    }
+    .cell{
+        font-size: 20px;
+    }
+    #controls{
+        flex-direction: column;
+        align-items: center;
+    }
+    #gameStatus{
+        flex-direction: column;
+        gap: 10px;
+    }
+    .keysControls, #legend{
+        grid-template-columns: 1fr;
+    }
+}
+@media (max-width: 480px) {
+    .gameContainer{
+        padding: 15px;
+    }
+    #gameBoard{
+        height: 350px;
+    }
+    .cell{
+        font-size: 18px;
+    }
 }
