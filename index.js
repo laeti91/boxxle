@@ -49,6 +49,15 @@ let popupTimeOut = null;
 /*VARIABLE D'ÉTAT DU NIVEAU*/
 let levelCompleted = false; //pour savoir si le niveau est terminé ou non
 
+/*VARIABLE ET CONSTANTES DES SPRITESHEET*/
+let frodoDirection = "up"; //direction initiale de frodon
+
+const FRIEND_TYPES = ["sam", "merry", "pippin", "gandalf"]; //types d'amis de frodon
+const TREE_TYPES = ["type1", "type2", "type3", "small1", "small2", "small3"]; //types d'arbres
+const TABLE_TYPES = ["table1", "table2", "table3", "table4"]; //types de tables du banquet
+const GRASS_TYPES = ["variant1", "variant2", "variant3", "variant4", "variant5", "variant6", "flowers", "flowers2"]; //types de sol
+
+
 //>>>>>>CREATION DE LA GRILLE DU JEU<<<<<<<//
 
 /*INITIALISATION D'UN NIVEAU*/
@@ -171,8 +180,10 @@ function draw(){
             //on vérifie si la cellule est une cible pour l'afficher en arrière plan
             const isTarget = isTargetReached(x, y); //on vérifie si la cellule est une cible
             if (isTarget){
-                cell.classList.add("target");
-                cell.textContent = "🪑"; //on ajoute un émoji cible
+                const tableType = TABLE_TYPES[Math.floor(Math.random() * TABLE_TYPES.length)]; //on choisit un type de table aléatoire
+                cell.classList.add("tables","target", tableType); //on ajoute les classes css pour la cible et le type de table
+                /*cell.classList.add("target");
+                cell.textContent = "🪑"; //on ajoute un émoji cible */
             }
 
             //on attribue une type de cellule
@@ -181,33 +192,44 @@ function draw(){
             switch (cellType){
                 case EMPTY: //si la cellule est vide
                     if (!isTarget){ //si la cellule n'est pas une cible on affiche comme même la cible plus les cellule du sol
-                        cell.classList.add("empty"); //on ajoute la classe css empty
-                        cell.textContent = "🌱"; //on ajoute une valeur emoji au texte
+                        const grassType = GRASS_TYPES[Math.floor(Math.random() * GRASS_TYPES.length)]; //on choisit un type de sol aléatoire
+                        cell.classList.add("grass", "empty", grassType); //on ajoute les classes css pour le sol et le type de sol
+                        /*cell.classList.add("empty"); //on ajoute la classe css empty
+                        cell.textContent = "🌱"; //on ajoute une valeur emoji au texte*/
                     }
                     break;
                 case TREE: //si c'est un arbre
-                    cell.classList.add("tree"); 
-                    cell.textContent = "🌳";
+                    const treeType = TREE_TYPES[Math.floor(Math.random() * TREE_TYPES.length)];//on choisit un type d'arbre aléatoire
+                    cell.classList.add("trees","tree", treeType); //on ajoute les classes css pour l'arbre et le type d'arbre
+                    /*cell.classList.add("tree"); 
+                    cell.textContent = "🌳";*/
                     break;
                 case FRIEND: //si c'est un ami de frodon
-                    cell.classList.add("friend");
+                    //on donne un type d'ami basé sur l'index de l'ami
+                    const friendIndex = friends.findIndex(friend => friend.x === x && friend.y === y); //on cherche l'ami dans le tableau
+                    const friendType = FRIEND_TYPES[friendIndex % FRIEND_TYPES.length]; //on choisit un type d'ami aléatoire
+                    
+                    cell.classList.add("characters", "friend", friendType); //on ajoute les classes css pour l'ami et le type d'ami
+                    /*cell.classList.add("friend"); //affichage antérieur pour les émojis*/
+
                     //on vérifie si l'ami est sur une cible
                     if (isTarget){
                         cell.classList.add("onTarget");
-                        cell.textContent = "🎉"; 
+                        /*cell.textContent = "🎉"; //affichage antérieur par émoji
                     }else{
-                        cell.textContent = "👤";
+                        cell.textContent = "👤";*/
                     }
                     break;
-                case TARGET: //si c'est une des tables du banquet
+                /*case TARGET: //si c'est une des tables du banquet
                     cell.classList.add("target");
                     cell.textContent = "🪑";
-                    break;
+                    break;*/
             }
             //si c'est frodon, on ajoute une classe css et un emoji
             if (x === frodoX && y === frodoY){
-                cell.classList.add("frodo"); //on ajoute la classe css frodo
-                cell.textContent = "🧑🏽‍🌾"; //on ajoute un émoji
+                cell.classList.add("frodo-sprites", "frodo", frodoDirection); //on ajoute les classes css pour frodon
+                /*cell.classList.add("frodo"); //on ajoute la classe css frodo
+                cell.textContent = "🧑🏽‍🌾"; //on ajoute un émoji*/
             }
         }
     }
@@ -221,6 +243,12 @@ function draw(){
 
 /*DÉPLACEMENT DE FRODON*/
 function moveFrodo(dx, dy){
+    //on met à jour la position de frodon avant le déplacement
+    if (dx < 0) frodoDirection = "left"; //si dx est négatif, frodon se déplace vers la gauche
+    else if (dx > 0) frodoDirection = "right"; //si dx est positif, frodon se déplace vers la droite
+    else if (dy < 0) frodoDirection = "up"; //si dy est négatif, frodon se déplace vers le haut
+    else if (dy > 0) frodoDirection = "down"; //si dy est positif, frodon se déplace vers le bas
+
     const newX = frodoX + dx; //on calcule une nouvelle position horizontale
     const newY = frodoY + dy; //on calcule une nouvelle position verticale
 

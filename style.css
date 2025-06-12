@@ -177,11 +177,13 @@ body {
 /*LES CELLULES DU JEU*/
 .cell{
     background: #5a7b5d;
+    background-repeat: no-repeat;
+    background-position: 0 0; 
     border: 1px solid #163817;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 0; /*on enlève les émojis pour remplacer par les assets*/
     transition: all 0.1s ease;
     border-radius: 3px;
     position: relative;
@@ -234,6 +236,130 @@ body {
     border: 3px solid #228B22;
     box-shadow: 0 0 15px rgba(144, 238, 144, 0.8);
 }
+
+/*SPRITESHEET PERSONNAGES*/
+.cell.characters{
+    background-image: url("./Asset/friends.png");
+    background-size: 400% 100%; /*4 colonnes de 1 ligne*/
+}
+.cell.friend.gandalf{
+    background-position: 0% 0%; /*premier personnage*/
+}
+.cell.friend.pippin{
+    background-position: 33.33% 0%; /*deuxième personnage*/
+}
+.cell.friend.merry{
+    background-position: 66.66% 0%; /*troisième personnage*/
+}
+.cell.friend.sam{
+    background-position: 100% 0%; /*quatrième personnage*/
+}
+
+/*SPRITESHEET FRODO DANS 4 DIRECTIONS*/
+.cell.frodo-sprites{
+    background-image: url("./Asset/frodo.png");
+    background-size: 400% 100%;
+}
+.cell.frodo.up{
+    background-position: 0% 0%; /*vers le haut*/
+}
+.cell.frodo.down{
+    background-position: 33.33% 0%; /*vers le bas*/
+}
+.cell.frodo.left{
+    background-position: 66.66% 0%; /*vers la gauche*/
+}
+.cell.frodo.right{
+    background-position: 100% 0%; /*vers la droite*/
+}
+
+/*SPRITESHEET SOL*/
+.cell.grass{
+    background-image: url("./Asset/grass.png");
+    background-size: 300% 300%; /*3 colonnes de 3 ligne*/
+}
+.cell.empty.flowers{
+    background-position: 0% 0%; /*herbe avec fleurs en haut à gauche*/
+}
+.cell.empty.flowers2{
+    background-position: 100% 50%; /*variante de l'herbe avec fleurs au milieu à droite*/
+}
+.cell.empty{
+    background-position: 50% 0%; /*herbe sans fleurs de taille normale en haut au milieu*/
+    border-color: #4a332d; /*bordure plus claire pour de l'herbe normale*/
+}
+.cell.empty.variant1{
+    background-position: 100% 0%; /*variante 1 de l'herbe en haut à droite*/
+}
+.cell.empty.variant2{
+    background-position: 0% 50%; /*variante 2 de l'herbe au milieu à gauche*/
+}
+.cell.empty.variant3{
+    background-position: 50% 50%; /*variante 3 de l'herbe au milieu au centre*/
+}
+.cell.empty.variant4{
+    background-position: 0% 100%; /*variante 4 de l'herbe en haut à droite*/
+}
+.cell.empty.variant5{
+    background-position: 50% 100%; /*variante 5 de l'herbe en bas au centre*/
+}
+.cell.empty.variant6{
+    background-position: 100% 100%; /*variante 6 de l'herbe en bas à droite*/
+}
+
+/*SPRITESHEET DES TABLES*/
+.cell.tables{
+    background-image: url("./Asset/tables.png");
+    background-size: 100% 400%; /*1 colonne de 4 ligne*/
+}
+.cell.target{
+    background-position: 0% 0%; /*premiere table en haut à gauche*/
+    border: 2px solid #B8860B;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    animation: targetPulse 2s infinite;
+}
+.cell.target.table1{
+    background-position: 0% 0%; /*première table première position en colonne*/
+}
+.cell.target.table2{
+    background-position: 0% 33.33%; /*deuxième table deuxième position en colonne*/
+}
+.cell.target.table3{
+    background-position: 0% 66.66%; /*troisième table toisième position en colonne*/
+}
+.cell.target.table4{
+    background-position: 0% 100%; /*quatrième table en bas quatrième position en colonne*/
+}
+
+/*SPRITESHEET DES ARBRES*/
+.cell.trees{
+    background-image: url("./Asset/trees.png");
+    background-size: 400% 200%; /*4 colonne de 2 lignes*/
+}
+/*les grands arbres*/
+.cell.tree{
+    background-position: 0% 0%; /*premier arbre en haut à gauche*/
+}
+.cell.tree.type2{
+    background-position: 33.33% 0%; /*deuxième arbre en haut à droite*/
+}
+.cell.tree.type3{
+    background-position: 66.66% 0%; /*troisième arbre en bas à gauche*/
+}
+.cell.tree.type4{
+    background-position: 100% 0%; /*quatrième arbre en bas à droite*/
+}
+/*les petits arbres*/
+.cell.tree.small{
+    background-position: 0% 100%; /*petit arbre en bas à gauche*/
+}
+.cell.tree.small2{
+    background-position: 33.33% 100%; /*petit arbre type 2 en bas à droite*/
+}
+.cell.tree.small3{
+    background-position: 66.66% 100%; /*petit arbre type 3 en haut à gauche*/
+}
+
 
 /*INFORMATIONS DU JEU*/
 #info{
