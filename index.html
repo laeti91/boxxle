@@ -9,6 +9,8 @@
     </head>
 
     <body>
+        <!--rafraichissement FPS-->
+        <div id="fpsCounter" class="fpsCount">FPS: 10</div>
         <!--contient la page du jeu-->
         <div class="gameContainer">
             <h1>Frodo's Birthday Banquet</h1>
@@ -19,6 +21,9 @@
                 <button onclick="resetLevel()">Reset Level</button>
                 <button onclick="window.initLevel(0)">Level 1</button>
                 <button onclick="window.nextLevel()">Next Level</button>
+                <button onclick="window.previousLevel()">Previous Level</button>
+                <button onclick="hideMessage()">Hide Message</button>
+                <button onclick="console.log(window.gameState)">Game State</button>
             </div>
 
             <div id="gameBoard"> 
@@ -45,10 +50,11 @@
             <div class="keysControl">
                 <h3>Controls</h3>
                 <div class="controlsGrid">
-                    <div class="controlButton">↑</div>
-                    <div class="controlButton">←</div>
-                    <div class="controlButton">→</div>
-                    <div class="controlButton">↓</div>
+                    <div class="controlButton">↑ / UP</div>
+                    <div class="controlButton">← / LEFT</div>
+                    <div class="controlButton">→ / RIGHT</div>
+                    <div class="controlButton">↓ / DOWN</div>
+                    <div class="controlButton">R / RESET</div>
                 </div>
             </div>
 
@@ -72,14 +78,19 @@
             <div id="legend">
                 <h3>Legend</h3>
                 <div id="legendGrid">
-                    <div class="legendItem">Frodo (you)</div>
-                    <div class="legendItem">Friends to move (package)</div>
-                    <div class="legendItem">Banquet tables (target)</div>
-                    <div class="legendItem">Tree (wall)</div>
-                    <div class="legendItem">Road (floor)</div>
+                    <div class="legendItem">🧑🏽‍🌾 Frodo (you)</div>
+                    <div class="legendItem">👤 Friends to move (package)</div>
+                    <div class="legendItem">🪑 Banquet tables (target)</div>
+                    <div class="legendItem">🌳 Tree (wall)</div>
+                    <div class="legendItem">🌱 Road (floor)</div>
                 </div>
             </div>
 
+            <!--message pop-up-->
+            <div id="messagePopup" class="messagePopup">
+                <span id="popUpText"></span>
+            </div>
+            
             <!--débug console caché-->
             <div id="debugInfo" class="debug" style="display: none;">
                 <div>Niveau: <span id="levelDisplay">1</span></div>
