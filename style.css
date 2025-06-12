@@ -115,7 +115,7 @@ body {
 
 .controlsGrid{
     display: grid;
-    grid-template-columns: repeat(auto-fit, min-max(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 8px;
 }
 
@@ -166,8 +166,6 @@ body {
     display: grid;
     grid-gap: 1px;
     gap: 1px;
-    display: -webkit-grid; /* support navigateur safari*/
-    display: -moz-grid; /*support navigateur firefox*/
     border: 3px solid #2d4a3e;
     border-radius: 10px;
     background: #4a6b4d;

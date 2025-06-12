@@ -46,6 +46,9 @@ let animationPaused = false; //animation en pause ou en cours
 /*VARIABLE D'AFFICHAGE POPUP GESTION SELON LE TIMER OU L'AFFICHAGE D'UN NOUVEAU MESSAGE*/
 let popupTimeOut = null;
 
+/*VARIABLE D'ÉTAT DU NIVEAU*/
+let levelCompleted = false; //pour savoir si le niveau est terminé ou non
+
 //>>>>>>CREATION DE LA GRILLE DU JEU<<<<<<<//
 
 /*INITIALISATION D'UN NIVEAU*/
@@ -62,6 +65,7 @@ function initLevel(levelIndex){
     const levelData = Levels[levelIndex];
 
     currentLevel = levelIndex; //mise à jour du niveau actuel
+    levelCompleted = false; //on réinitialise l'état du niveau à non terminé
     
     //calcul des dimensions du niveau
     gameRow = levelData.length; //nombre de lignes du niveau
@@ -333,11 +337,14 @@ function handleKeyPress(event){
 //>>>>>>>>NIVEAUX ET JEU TERMINÉ<<<<<<<<//
 
 function checkVictory(){
+    //on vérifie que le niveau n'est pas déja terminé avant de faire la vérification de chaque élément
+    if (levelCompleted) return;
+
     //on initialise une variable pour savoir combien d'amis sont sur la cible
     let friendsOnTarget = 0;
-    friends.forEach(friends => { //on parcours chaque ami
+    friends.forEach(friend => { //on parcours chaque ami
         //on vérifie la position de l'ami par rapport aux cibles
-        if (isFriendOnTarget(friends.x, friends.y)){
+        if (isFriendOnTarget(friend.x, friend.y)){
             friendsOnTarget++; //on ajoute 1 au compteur si un ami est sur une cible
         }
     });
@@ -347,6 +354,7 @@ function checkVictory(){
 
     //on déclare la victoire si tous les amis ont atteint toutes les cibles
     if (friendsOnTarget === friends.length && friendsOnTarget === targets.length){ //on compare le nombre d'amis sur les cibles et le nombre total d'amis sur la cible et le nombres de cibles
+        levelCompleted = true; //on met à jour l'état du niveau
         showMessage(`🎉 Congratulation, You have completed level ${currentLevel + 1} in ${steps} steps!`, true); //on affiche le message si on a terminer le niveau avec le nombre de pas effectué pour le challenge
         setTimeout(() => {
             nextLevel(); //on passe au niveau suivant après un délais
@@ -414,7 +422,7 @@ function showMessage(text, isPermanent = false){
 
 /*FONCTION POUR CACHER LES MESSAGES POPUP*/
 function hideMessage(){
-    const popUp = document.getElementById("popupMessage"); //on récupère l'élément HTML du message pop-up
+    const popUp = document.getElementById("messagePopup"); //on récupère l'élément HTML du message pop-up
     if (popUp){
         popUp.classList.remove("show"); //on efface le style de la classe show
         popUp.style.display = "none"; //on masque le message
@@ -433,11 +441,9 @@ function updateDebugInfo(){
     //on compte les amis sur les cibles
     let friendsOnTarget = 0;
     friends.forEach(friend => { //pour chaque ami
-        targets.forEach(target => { //et pour chaque cible
-            if (isFriendOnTarget(friend.x, friend.y)){ //on vérifie si l'ami est sur une cible
-                friendsOnTarget++; //on ajoute 1 au compteur d'amis sur les cibles
-            }
-        });
+        if (isFriendOnTarget(friend.x, friend.y)){ //on vérifie si l'ami est sur une cible
+            friendsOnTarget++; //on ajoute 1 au compteur d'amis sur les cibles
+        }
     });
 
     //on affiche les informations de débogage dans la console
