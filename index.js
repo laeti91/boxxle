@@ -290,6 +290,48 @@ function pushFriend(friendX, friendY, dx, dy){
     return true; //on retourne vrai si l'ami a été déplacé avec
 }
 
+/*GESTION DES TOUCHES DU CLAVIER*/
+function handleKeyPress(event){
+    let moved = false; //initialisation de la variable moved pour connaitre le déplacement de frodon
+    const keyPress = event.keyPress || event.which; //on stocke dans une constante le code de la touche pressée
+    const direction = KEYS[keyPress]; //on récupère dans l'objet KEYS la touche pressée
+
+    //on applique une direction avec le touches de l'objet KEYS
+    switch (direction){
+        case "left": //si la touche pressée est la flèche gauche
+            moved = moveFrodo(-1, 0); //on déplace frodon d'une case vers la gauche
+            break; //on sort du switch
+        case "right": 
+            moved = moveFrodo(1, 0);
+            break;
+        case "up":
+            moved = moveFrodo(0, -1);
+            break;
+        case "down":
+            moved = moveFrodo(0, 1);
+            break;
+    }
+
+    //gestion de la touche de réinitialisation de niveau
+    switch (event.key.toLowerCase()){
+        case "r":
+            resetLevel(); //on appelle la fonction de réinitialisation du niveau
+            return; //on sort de la fonction
+        case "escape":
+            hideMessage(); //on appelle la fonction pour cacher le message manuellement
+            return;
+    }
+
+    //si frodon a été déplacé, on redessine le jeu
+    if (moved){
+        draw(); //on redessine le jeu
+        event.preventDefault(); //on empêche le scroll de la page
+    }
+}
+
+
+//>>>>>>>>NIVEAUX ET JEU TERMINÉ<<<<<<<<//
+
 function checkVictory(){
     //on initialise une variable pour savoir combien d'amis sont sur la cible
     let friendsOnTarget = 0;
@@ -311,6 +353,9 @@ function checkVictory(){
         }, 2000); //2 secondes de délais
     }
 }
+
+
+//>>>>>>>>GESTION DES NIVEAUX<<<<<<<<//
 
 /*FONCTION POUR PASSER AU NIVEAU SUIVANT*/
 function nextLevel(){
@@ -334,6 +379,52 @@ function previousLevel(){
         showMessage("You are already at the first level!") //on signale à l'utlisateur qu'il est au niveau 1
     }
 }
+
+/*FONCTION POUR RÉINITIALISER LE NIVEAU ACTUEL*/
+function resetLevel(){
+    showMessage("Resetting current level...");
+    initLevel(currentLevel);
+}
+
+
+//>>>>>>>>LES MESSAGES AFFICHÉS À L'ÉCRAN<<<<<<<<<//
+
+/*GESTION DES MESSAGES POPUP*/
+function showMessage(text, isPermanent = false){
+    const popUp = document.getElementById("popupMessage"); //on récupère l'élément HTML du message pop-up
+    const popUpText = document.getElementById("popupText"); //on récupère l'élément HTML du texte dans le message pop-up
+
+    if (popUp && popUpText){
+        popUpText.textContent = text; //on met à jour le texte du message
+        popUp.classList.add("show"); 
+        popUp.style.display = "block"; //on affiche le message
+        //si le temps restant est terminé, on efface le message précédent
+        if (popupTimeOut){
+            clearTimeout(popupTimeOut);
+        }
+        //si le message n'est pas permanent, on le masque après 3 secondes
+        if (!isPermanent){
+            popupTimeOut = setTimeout(() => { //si le temps restant est égale au temps maximum
+                hideMessage(); //on appelle la fonction qui masque le message
+            }, 3000);
+        }
+    }
+    console.log(`Message: ${text}`); 
+}
+
+/*FONCTION POUR CACHER LES MESSAGES POPUP*/
+function hideMessage(){
+    const popUp = document.getElementById("popupMessage"); //on récupère l'élément HTML du message pop-up
+    if (popUp){
+        popUp.classList.remove("show"); //on efface le style de la classe show
+        popUp.style.display = "none"; //on masque le message
+    }
+    if (popupTimeOut){
+        clearTimeout(popupTimeOut); //on efface le temps restant du message
+        popupTimeOut = null; //on réinitialise le temps restant
+    }
+}
+
 
 //>>>>>>>>GESTION DES ÉVÉNEMENTS<<<<<<<<//
 
