@@ -312,6 +312,29 @@ function checkVictory(){
     }
 }
 
+/*FONCTION POUR PASSER AU NIVEAU SUIVANT*/
+function nextLevel(){
+    if (currentLevel + 1 < Levels.length){ //on vérifie si le niveau suivant existe en comparant la longueur du tableau et le niveau actuel
+        initLevel(currentLevel + 1); //on initialise le niveau suivant
+    }else{
+        showMessage("🎉 Congratulations! You have completed all levels!", true); //message de fin de jeu si tous les niveau ont été terminé avec succès
+        setTimeout(() => {
+            if (confirm("Do you want to restart the game?")){ //on demande si l'utilisateur veut recommencer le jeu
+                initLevel(0); //on recommence le jeu au niveau 1
+            }
+        }, 2000); //2 secondes de délais avant que le jeu recommence
+    }
+}
+
+/*FONCTION POUR AFFICHER LE NIVEAU PRÉCÉDENT*/
+function previousLevel(){
+    if (currentLevel > 0){ //on vérifie si l'utilisateur est au niveau 1
+        initLevel(currentLevel - 1); //on redescend au niveau précédent
+    }else{
+        showMessage("You are already at the first level!") //on signale à l'utlisateur qu'il est au niveau 1
+    }
+}
+
 //>>>>>>>>GESTION DES ÉVÉNEMENTS<<<<<<<<//
 
 /*MISE A JOUR DES INFORMATIONS DE DEBUG*/
