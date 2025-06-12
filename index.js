@@ -432,10 +432,10 @@ function hideMessage(){
 function updateDebugInfo(){
     //on compte les amis sur les cibles
     let friendsOnTarget = 0;
-    friends.forEach(friend => {
-        targets.forEach(target => {
-            if (friend.x === target.x && friend.y === target.y){
-                friendsOnTarget++;
+    friends.forEach(friend => { //pour chaque ami
+        targets.forEach(target => { //et pour chaque cible
+            if (isFriendOnTarget(friend.x, friend.y)){ //on vérifie si l'ami est sur une cible
+                friendsOnTarget++; //on ajoute 1 au compteur d'amis sur les cibles
             }
         });
     });
@@ -462,14 +462,34 @@ function updateDebugInfo(){
 /*FONCTION DE DÉMARRAGE DU JEU*/
 function startGame(){
     //affichage console pour vérifié que le jeu démarre
-    console.log("Démarrage du jeu...");
+    console.log("Démarrage du jeu Frodo's Birthday Banquet...");
         
     try{
+        //on ajoute un écouteur d'évènement pour les touches du clavier
+        document.addEventListener("keydown", handleKeyPress);
+
         initLevel(0); //on initialise le niveau à 0
         //affichage console pour vérifié le chargement du niveau
         console.log("le jeu a démarré avec succès");
+
         //on rend les fonctions de débogage visibles
         window.initLevel = initLevel;
+        window.nextLevel = nextLevel;
+        window.previousLevel = previousLevel;
+        window.resetLevel = resetLevel;
+        window.hideMessage = hideMessage;
+        window.gameState = {
+            currentLevel,
+            gameGrid,
+            gameColumn,
+            gameRow,
+            frodoX,
+            frodoY,
+            friends,
+            targets,
+            steps,
+        };
+        
     }catch (error){
         console.error("Erreur lors du démarrage du jeu:", error); //on affiche un message d'erreur avec l'erreur
     }
