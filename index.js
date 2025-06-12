@@ -284,7 +284,32 @@ function pushFriend(friendX, friendY, dx, dy){
     frodoY = friendY;
     steps++; //on ajoute 1 au compteur de pas
 
+    //on vérifie si les cibles sont atteintes
+    checkVictory();
+
     return true; //on retourne vrai si l'ami a été déplacé avec
+}
+
+function checkVictory(){
+    //on initialise une variable pour savoir combien d'amis sont sur la cible
+    let friendsOnTarget = 0;
+    friends.forEach(friends => { //on parcours chaque ami
+        //on vérifie la position de l'ami par rapport aux cibles
+        if (isFriendOnTarget(friends.x, friends.y)){
+            friendsOnTarget++; //on ajoute 1 au compteur si un ami est sur une cible
+        }
+    });
+
+    //on affiche un message console pour comparer le nombre de cibles atteintes par les amis et le nombre total d'amis
+    console.log(`Vérification de la victoire: ${friendsOnTarget}/${friends.length} amis sur les cibles`);
+
+    //on déclare la victoire si tous les amis ont atteint toutes les cibles
+    if (friendsOnTarget === friends.length && friendsOnTarget === targets.length){ //on compare le nombre d'amis sur les cibles et le nombre total d'amis sur la cible et le nombres de cibles
+        showMessage(`🎉 Congratulation, You have completed level ${currentLevel + 1} in ${steps} steps!`, true); //on affiche le message si on a terminer le niveau avec le nombre de pas effectué pour le challenge
+        setTimeout(() => {
+            nextLevel(); //on passe au niveau suivant après un délais
+        }, 2000); //2 secondes de délais
+    }
 }
 
 //>>>>>>>>GESTION DES ÉVÉNEMENTS<<<<<<<<//
