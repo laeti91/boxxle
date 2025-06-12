@@ -164,13 +164,22 @@ function draw(){
             cell.className = "cell"; //on reprend les styles de base de la cellule
             cell.textContent = ""; //on réinitialise le texte de la cellule
 
+            //on vérifie si la cellule est une cible pour l'afficher en arrière plan
+            const isTarget = isTargetReached(x, y); //on vérifie si la cellule est une cible
+            if (isTarget){
+                cell.classList.add("target");
+                cell.textContent = "🪑"; //on ajoute un émoji cible
+            }
+
             //on attribue une type de cellule
             const cellType = gameGrid[y][x]; 
 
             switch (cellType){
                 case EMPTY: //si la cellule est vide
-                    cell.classList.add("empty"); //on ajoute la classe css empty
-                    cell.textContent = "🌱"; //on ajoute une valeur emoji au texte
+                    if (!isTarget){ //si la cellule n'est pas une cible on affiche comme même la cible plus les cellule du sol
+                        cell.classList.add("empty"); //on ajoute la classe css empty
+                        cell.textContent = "🌱"; //on ajoute une valeur emoji au texte
+                    }
                     break;
                 case TREE: //si c'est un arbre
                     cell.classList.add("tree"); 
@@ -178,7 +187,13 @@ function draw(){
                     break;
                 case FRIEND: //si c'est un ami de frodon
                     cell.classList.add("friend");
-                    cell.textContent = "👤";
+                    //on vérifie si l'ami est sur une cible
+                    if (isTarget){
+                        cell.classList.add("onTarget");
+                        cell.textContent = "🎉"; 
+                    }else{
+                        cell.textContent = "👤";
+                    }
                     break;
                 case TARGET: //si c'est une des tables du banquet
                     cell.classList.add("target");
