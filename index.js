@@ -245,6 +245,7 @@ function moveFrodo(dx, dy){
     }
     return false; //par défaut, si le déplacement n'est pas possible
 }
+
 /*POUSSER UN AMI*/
 function pushFriend(friendX, friendY, dx, dy){
     //on calcule la position de l'ami
@@ -272,15 +273,18 @@ function pushFriend(friendX, friendY, dx, dy){
 
     //on met à jour la position de l'ami
     const friendIndex = friends.findIndex(friend => friend.x === friendX && friend.y === friendY); //on cherche l'ami dans le tableau
-    if (friendIndex){
-        friendIndex.x = pushX; //on met à jour la position en colonne
-        friendIndex.y = pushY; //on met à jour la position en ligne
+    if (friendIndex !== -1){ //si l'ami est différent de non trouvé
+        friends[friendIndex].x = pushX; //on met à jour la position en colonne
+        friends[friendIndex].y = pushY; //on met à jour la position en ligne
+        console.log(`Ami déplacé en (${pushX}, ${pushY})`) //on affiche la nouvelle position dans la console
     }
 
     //frodon prend la place de l'ami
     frodoX = friendX;
     frodoY = friendY;
     steps++; //on ajoute 1 au compteur de pas
+
+    return true; //on retourne vrai si l'ami a été déplacé avec
 }
 
 //>>>>>>>>GESTION DES ÉVÉNEMENTS<<<<<<<<//
