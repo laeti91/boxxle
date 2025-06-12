@@ -11,11 +11,73 @@
     <body>
         <!--rafraichissement FPS-->
         <div id="fpsCounter" class="fpsCount">FPS: 10</div>
+        
+        <!--Banderole-->
+        <div class="bilboImgBanner"></div>
+
         <!--contient la page du jeu-->
         <div class="gameContainer">
             <h1>Frodo's Birthday Banquet</h1>
             <p id="subtitle">Help Frodo guide his friends to Bilbo's party!</p>
 
+            <!--Vidéo-->
+            <section class="youtubeSection">
+                <h3>Watch the Original Scene</h3>
+                <div class="youtubeContainer">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/s2sVMLr1fDg?si=HCg6dMo3p4iF6Gw9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </section>
+
+            <!--sénario du jeu-->
+            <section class="storySection">
+                <h2>The Story</h2>
+                <div class="storyContent"">
+                    <p>
+                        <strong>🇬🇧 English: </strong><br>
+                        Hey Frodo! Welcome to Bilbo's party! <br>
+                        Sam, Merry, and Pippin are lost (again) help them reach the feast before all the cake is gone!
+                        But be careful, one wrong move and… chaos!
+                        Use the arrow keys and go!
+                        Adventure (and food) await!
+                    </p>
+                    <p>
+                        <strong>🇫🇷 Français: </strong><br> 
+                        Hé Frodo ! Bienvenue à la fête de Bilbo! <br>
+                        Sam, Merry et Pippin sont perdus (encore) aide-les à rejoindre le banquet avant qu'il n'y ait plus de gâteau!
+                        Mais attention, un pas de travers et… c'est le bazar.
+                        Utilise les flèches du clavier et fonce!
+                        L'aventure t'appelle (et la nourriture aussi)!
+                    </p>
+                </div>
+            </section>
+            
+            <!--LEGEND ET CONTROLS-->
+            <div class="legend-controlsContainer">
+                <!--légende du jeu-->
+                <div id="legend">
+                    <h3>Legend</h3>
+                    <div id="legendGrid">
+                        <div class="legendItem">🧑🏽‍🌾 Frodo (you)</div>
+                        <div class="legendItem">👤 Friends to move (package)</div>
+                        <div class="legendItem">🪑 Banquet tables (target)</div>
+                        <div class="legendItem">🌳 Tree (wall)</div>
+                        <div class="legendItem">🌱 Road (floor)</div>
+                    </div>
+                </div>
+
+                <!--touche de clavier-->
+                <div class="keysControls">
+                    <h3>Controls</h3>
+                    <div class="controlsGrid">
+                        <div class="controlButton">↑ / UP</div>
+                        <div class="controlButton">← / LEFT</div>
+                        <div class="controlButton">→ / RIGHT</div>
+                        <div class="controlButton">↓ / DOWN</div>
+                        <div class="controlButton">R / RESET</div>
+                    </div>
+                </div>
+            </div>
+            
             <!--fonction général du jeu-->
             <div id="controls">
                 <button onclick="resetLevel()">Reset Level</button>
@@ -26,65 +88,32 @@
                 <button onclick="console.log(window.gameState)">Game State</button>
             </div>
 
-            <div id="gameBoard"> 
-                <!--création dynamique des cellules de la grille-->
-            </div>
-
-            <!--état actuel du jeu-->
-            <div id="gameState" class="gameState">
-                <div class="stateType">
-                    <span class="stateLabel">Level: </span>
-                    <span id="levelDisplay" class="stateValue">1</span>
+            <!--LE JEU-->
+            <section class="gameSection"> 
+                <h2>Game Board</h2>
+                <!--état actuel du jeu-->
+                <div id="gameState" class="gameState">
+                    <div class="stateType">
+                        <span class="stateLabel">Level: </span>
+                        <span id="levelDisplay" class="stateValue">1</span>
+                    </div>
+                    <div class="stateType">
+                        <span class="statusLabel">Steps: </span>
+                        <span id="stepDisplay" class="stateValue">0</span>
+                    </div>
+                    <div class="stateType">
+                        <span class="stateLabel">Friends on Table: </span>
+                        <span id="friendDisplay" class="stateValue">0/3</span>
+                    </div>
                 </div>
-                <div class="stateType">
-                    <span class="statusLabel">Steps: </span>
-                    <span id="stepDisplay" class="stateValue">0</span>
+                
+                <div class="gameBoardContainer">
+                    <!--grille du jeu-->
+                    <div id="gameBoard">
+                        <!--création dynamique des cellules de la grille--> 
+                    </div>
                 </div>
-                <div class="stateType">
-                    <span class="stateLabel">Friends on Table: </span>
-                    <span id="friendDisplay" class="stateValue">0/3</span>
-                </div>
-            </div>
-
-            <!--touche de clavier-->
-            <div class="keysControls">
-                <h3>Controls</h3>
-                <div class="controlsGrid">
-                    <div class="controlButton">↑ / UP</div>
-                    <div class="controlButton">← / LEFT</div>
-                    <div class="controlButton">→ / RIGHT</div>
-                    <div class="controlButton">↓ / DOWN</div>
-                    <div class="controlButton">R / RESET</div>
-                </div>
-            </div>
-
-            <!--sénario du jeu-->
-            <div id="info">
-                <p>🇬🇧 Hey Frodo! Welcome to Bilbo's party! <br>
-                Sam, Merry, and Pippin are lost (again 😅) help them reach the feast before all the cake is gone!
-                But be careful, one wrong move and… chaos!
-                Use the arrow keys and go!
-                🎉 Adventure (and food) await!
-                </p>
-                <p>🇫🇷 Hé Frodo ! Bienvenue à la fête de Bilbo! <br>
-                Sam, Merry et Pippin sont perdus (encore 😅) aide-les à rejoindre le banquet avant qu'il n'y ait plus de gâteau!
-                Mais attention, un pas de travers et… c'est le bazar.
-                Utilise les flèches du clavier et fonce!
-                🍰 L'aventure t'appelle (et la nourriture aussi)!
-                </p>
-            </div>
-
-            <!--légende du jeu-->
-            <div id="legend">
-                <h3>Legend</h3>
-                <div id="legendGrid">
-                    <div class="legendItem">🧑🏽‍🌾 Frodo (you)</div>
-                    <div class="legendItem">👤 Friends to move (package)</div>
-                    <div class="legendItem">🪑 Banquet tables (target)</div>
-                    <div class="legendItem">🌳 Tree (wall)</div>
-                    <div class="legendItem">🌱 Road (floor)</div>
-                </div>
-            </div>
+            </section>
 
             <!--message pop-up-->
             <div id="messagePopup" class="messagePopup">
