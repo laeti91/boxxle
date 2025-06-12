@@ -1,6 +1,6 @@
 //>>>>>>>IMPORTATION ET CONSTANTES<<<<<//
 
-import {Levels} from "./levels.js";
+import { Levels } from "./levels.js";
 
 /*INITIALISATION DES CONSTANTES DE LA GRILLE, DU RAFRAISSEMENT DES ANIMATIONS ET DES TOUCHES DU CLAVIER*/
 const GRID_WIDTH = 50; /* 50 colonnes sur 25 lignes correspondent à un choix de 1250 cellules*/
@@ -16,7 +16,7 @@ const KEYS = { /*valeur des touches du clavier*/
 };
 
 /*INITIALISATION DU TYPE DE CELLULE*/
-const EMPTY = 0; //case vide (🌱 sol)
+const EMPTY = 0; //case vide (sol)
 const TREE = 1; //arbres obstacles (mur)
 const FRIEND = 2; //les amis de frodon (Sam, Merry, Pippin, Gandalf)
 const FRODO = 3; //le hero (frodon)
@@ -28,7 +28,7 @@ const TARGET = 4; //les tables du banquet (cible)
 /*ETAT INITIAL DU JEU*/
 let currentLevel = 0; //niveau initial du jeu
 let gameGrid = []; //tableau 2D vide qui contiendra les cellules du jeu
-let gameColomn = 0; //largeur du jeu (adapter selon le niveau)
+let gameColumn = 0; //largeur du jeu (adapter selon le niveau)
 let gameRow = 0; //hauteur du jeu (adapter selon le niveau)
 
 let frodoX = 0; //position horizontale de frodon (colonne)
@@ -43,6 +43,8 @@ let animationInterval;
 let timeStamp = 0; //mise à jour du dernier mouvement
 let animationPaused = false; //animation en pause ou en cours
 
+/*VARIABLE D'AFFICHAGE POPUP GESTION SELON LE TIMER OU L'AFFICHAGE D'UN NOUVEAU MESSAGE*/
+let popupTimeOut = null;
 
 //>>>>>>CREATION DE LA GRILLE DU JEU<<<<<<<//
 
@@ -52,7 +54,8 @@ function initLevel(levelIndex){
     if (!Levels || !Levels[levelIndex]){
         console.error(`Niveau ${levelIndex} introuvable`); //affichage d'un message d'erreur si le niveau n'existe pas
         console.log("niveaux disponibles:", Levels.length); //affichage du nombre de niveaux disponibles
-        return; //on quitte la fonction si le niveau n'existe pas
+        showMessage(`Level ${levelIndex + 1} not found... Only ${Levels.length} available levels are shown`); //affichage d'un message sur les niveaux disponibles
+        return false; //on quitte la fonction si le niveau n'existe pas
     }
 
     //récupération des données du niveau
@@ -62,7 +65,7 @@ function initLevel(levelIndex){
     
     //calcul des dimensions du niveau
     gameRow = levelData.length; //nombre de lignes du niveau
-    gameColomn = levelData[0].lenght; //mise à jour de la largeur du jeu
+    gameColumn = levelData[0].length; //mise à jour de la largeur du jeu
 
     //réinitialisation des variables du jeu
     gameGrid = []; //on vide la grille
@@ -73,7 +76,7 @@ function initLevel(levelIndex){
     //analyse de chaque cellule du niveau
     for (let y = 0; y < gameRow; y++){ //on parcours chaque ligne
         let row = []; //création d'une ligne vide
-        for (let x = 0; x < gameColomn; x++){ //on parcours chaque cellule de la ligne
+        for (let x = 0; x < gameColumn; x++){ //on parcours chaque cellule de la ligne
             const cellValue = levelData[y][x]; //on récupère la valeur de la cellule
 
             //identifier le type de cellule
@@ -83,19 +86,16 @@ function initLevel(levelIndex){
                 row.push(EMPTY); //si frodon n'est pas dans la grille, on met le sol
                 //affichage console pour vérifié que frodon est bien positionné
                 console.log(`Frodon positionné en (${x}, ${y})`);
-
             }else if (cellValue === FRIEND){
                 friends.push({x: x, y: y}); //on ajoute un ami de frodon à la liste des amis
                 row.push(FRIEND); //on ajoute l'ami de frodon à la ligne
                 //affichage console pour vérifié que l'ami est bien positionné
                 console.log(`Ami positionné en (${x}, ${y})`)
-
             }else if (cellValue === TARGET){
                 targets.push({x: x, y: y}) //on ajoute une cible à la liste des cibles
                 row.push(TARGET); //on ajoute une cible à la ligne
                 //affichage console pour vérifié que la cible est bien positionnée
                 console.log(`Table de banquet positionné en (${x}, ${y})`);
-
             }else{
                 row.push(cellValue); //pour les autres cellules (arbre ou vide), on ajoute la valeur de la cellule
             }
@@ -104,9 +104,11 @@ function initLevel(levelIndex){
     }
     //affichage console le niveau chargé avec succès
     console.log(`Niveau ${levelIndex} chargé avec succès`);
+    showMessage(`Level ${levelIndex + 1} loaded successfully!`);
 
     createGrid(); //on crée la grille du jeu
     draw(); //on dessine le jeu
+    return true; //on retourne vrai en cas de chargement réussi du niveau
 }
 
 
@@ -116,10 +118,10 @@ function createGrid(){
     //on réinitialise le contenu de la grille
     gameBoard.innerHTML = "";
     //on configure la grille css
-    gameBoard.style.gridTemplateColumns = `repeat(${gameColomn}, 1fr)`; //le nombre de colonnes est égal à la largeur du jeu
+    gameBoard.style.gridTemplateColumns = `repeat(${gameColumn}, 1fr)`; //le nombre de colonnes est égal à la largeur du jeu
     gameBoard.style.gridTemplateRows = `repeat(${gameRow}, 1fr)`; //le nombre de lignes est égal à la hauteur du jeu
     
-    let totalCell = gameColomn * gameRow; //on calcule le nombre total de cellules dans la grille
+    let totalCell = gameColumn * gameRow; //on calcule le nombre total de cellules dans la grille
     for (let i=0; i < totalCell; i++){ //on parcours chaque cellule
         const cell = document.createElement("div"); //on crée un nouvel élément HTML div pour une cellule
         cell.className = "cell"; //on ajoute une classe css pour chaque cellule individuelle
@@ -132,6 +134,14 @@ function createGrid(){
 
 
 //>>>>>>>>RENDU GRAPHIQUE DU JEU<<<<<<<<<//
+/*FONCTION DE VÉRIFICATION DE LA POSITION DE LA CIBLE*/
+function isTargetReached(){
+    return targets.some(target => target.x === x && target.y === y);
+}
+/*FONCTION DE VÉRIFICATION DE LA POSITION DE L'AMI*/
+function isFriendOnTarget(friendX, friendY){
+    return isTargetReached(friendX, friendY);
+}
 
 /*ON DESSINE LE JEU*/
 function draw(){
@@ -140,9 +150,9 @@ function draw(){
 
     //on récupère toutes les cellules en parcourant la grille du jeu
     for (let y = 0; y < gameRow; y++){
-        for (let x = 0; x < gameColomn; x++){
+        for (let x = 0; x < gameColumn; x++){
             //on calcule l'index de la cellule dans la grille
-            const cellIndex = y * gameColomn + x;
+            const cellIndex = y * gameColumn + x;
             const cell = document.getElementById(`cell-${cellIndex}`); //on récupère la cellule par son ID
 
             if (!cell){
@@ -196,12 +206,12 @@ function moveFrodo(dx, dy){
     const newY = frodoY + dy; //on calcule une nouvelle position verticale
 
     //vérification des limites de la grille
-    if (newX < 0 || newX >= gameColomn || newY < 0 || newY >= gameRow){
+    if (newX < 0 || newX >= gameColumn || newY < 0 || newY >= gameRow){
         console.warn("Déplacement hors des limites de la grille"); //message d'avertissement si le déplacement est hors des limites
-        return; //on quitte la fonction si le déplacement est hors des limites
+        return false; //on quitte la fonction si le déplacement est hors des limites
     }
 
-    const targetCell = gameGrid[newX][newY]; //on récupère la cellule cible
+    const targetCell = gameGrid[newY][newX]; //on récupère la cellule cible
 
     //s'il sagit d'une cellule vide ou une cible, frodon peut se déplacer
     if (targetCell === EMPTY || targetCell === TARGET){
@@ -218,8 +228,45 @@ function moveFrodo(dx, dy){
     if (targetCell === FRIEND){
         return pushFriend(newX, newY, dx, dy); //on appelle la fonction pour pousser l'ami
     }
+    return false; //par défaut, si le déplacement n'est pas possible
 }
+/*POUSSER UN AMI*/
+function pushFriend(friendX, friendY, dx, dy){
+    //on calcule la position de l'ami
+    const pushX = friendX + dx; //nouvelle position en ligne de l'ami
+    const pushY = friendY + dy; //nouvelle position en colonne de l'ami
 
+    //on vérifie les limites de la grille
+    if (pushX < 0 || pushX >= gameColumn || pushY < 0 || pushY >= gameRow){
+        console.warn("l'ami est hors limites du jeu"); //message d'avertissement en cas de sortie de la grille
+        return false; //on sort de la fonction si c'est le cas
+    }
+
+    //on récupère la cellule de l'ami
+    const pushCell = gameGrid[pushY][pushX]; 
+
+    //on donne des conditions de types de cellules pour pousser l'ami (empty ou target)
+    if (pushCell !== EMPTY && pushCell !== TARGET){
+        console.warn("Impossible de déplacer l'ami"); //message d'avertissement si l'ami ne peut pas etre poussé
+        return false;
+    }
+
+    //déplacement de l'ami
+    gameGrid[friendY][friendX] = EMPTY; //on place une case vide du sol là où l'ami était
+    gameGrid[pushY][pushX] = FRIEND; //l'ami est déplacé à la nouvelle position
+
+    //on met à jour la position de l'ami
+    const friendIndex = friends.findIndex(friend => friend.x === friendX && friend.y === friendY); //on cherche l'ami dans le tableau
+    if (friendIndex){
+        friendIndex.x = pushX; //on met à jour la position en colonne
+        friendIndex.y = pushY; //on met à jour la position en ligne
+    }
+
+    //frodon prend la place de l'ami
+    frodoX = friendX;
+    frodoY = friendY;
+    steps++; //on ajoute 1 au compteur de pas
+}
 
 //>>>>>>>>GESTION DES ÉVÉNEMENTS<<<<<<<<//
 
