@@ -70,7 +70,7 @@ body {
 }
 
 /*ETAT ACTUEL DU JEU*/
-.gameStatus{
+.gameState{
     display: flex;
     justify-content: space-around;
     margin: 20px 0;
@@ -80,18 +80,18 @@ body {
     background: rgba(45, 75, 62, 0.1);
 }
 
-.statusType{
+.stateType{
     text-align: center;
 }
 
-.statusLabel{
+.stateLabel{
     display: block;
     font-size: 0.9rem;
     color: #4a6b4d;
     margin-bottom: 5px;
 }
 
-.statusValue{
+.stateValue{
     display: block;
     font-size: 1.4rem;
     font-weight: bold;
@@ -164,7 +164,10 @@ body {
     width: 100%;
     position: relative;
     display: grid;
+    grid-gap: 1px;
     gap: 1px;
+    display: -webkit-grid; /* support navigateur safari*/
+    display: -moz-grid; /*support navigateur firefox*/
     border: 3px solid #2d4a3e;
     border-radius: 10px;
     background: #4a6b4d;
@@ -339,7 +342,7 @@ body {
         flex-direction: column;
         align-items: center;
     }
-    #gameStatus{
+    #gameState{
         flex-direction: column;
         gap: 10px;
     }

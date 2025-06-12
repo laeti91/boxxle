@@ -135,7 +135,7 @@ function createGrid(){
 
 //>>>>>>>>RENDU GRAPHIQUE DU JEU<<<<<<<<<//
 /*FONCTION DE VÉRIFICATION DE LA POSITION DE LA CIBLE*/
-function isTargetReached(){
+function isTargetReached(x, y){
     return targets.some(target => target.x === x && target.y === y);
 }
 /*FONCTION DE VÉRIFICATION DE LA POSITION DE L'AMI*/
@@ -293,8 +293,8 @@ function pushFriend(friendX, friendY, dx, dy){
 /*GESTION DES TOUCHES DU CLAVIER*/
 function handleKeyPress(event){
     let moved = false; //initialisation de la variable moved pour connaitre le déplacement de frodon
-    const keyPress = event.keyPress || event.which; //on stocke dans une constante le code de la touche pressée
-    const direction = KEYS[keyPress]; //on récupère dans l'objet KEYS la touche pressée
+    const keyCode = event.keyCode || event.which; //on stocke dans une constante le code de la touche pressée
+    const direction = KEYS[keyCode]; //on récupère dans l'objet KEYS la touche pressée
 
     //on applique une direction avec le touches de l'objet KEYS
     switch (direction){
@@ -391,8 +391,8 @@ function resetLevel(){
 
 /*GESTION DES MESSAGES POPUP*/
 function showMessage(text, isPermanent = false){
-    const popUp = document.getElementById("popupMessage"); //on récupère l'élément HTML du message pop-up
-    const popUpText = document.getElementById("popupText"); //on récupère l'élément HTML du texte dans le message pop-up
+    const popUp = document.getElementById("messagePopup"); //on récupère l'élément HTML du message pop-up
+    const popUpText = document.getElementById("popUpText"); //on récupère l'élément HTML du texte dans le message pop-up
 
     if (popUp && popUpText){
         popUpText.textContent = text; //on met à jour le texte du message
@@ -489,7 +489,7 @@ function startGame(){
             targets,
             steps,
         };
-        
+
     }catch (error){
         console.error("Erreur lors du démarrage du jeu:", error); //on affiche un message d'erreur avec l'erreur
     }
