@@ -5,7 +5,7 @@
 }
 
 body {
-    background-color: linear-gradient(135deg, rgb(176, 149, 30), rgb(140, 118, 24));;
+    background: rgb(176, 149, 30);
     font-family: Georgia, 'Times New Roman', Times, serif;
     color: #2d4a3e;
     min-height: 100vh;
@@ -22,11 +22,10 @@ body {
     position: relative;
     overflow: hidden;
     margin-left: calc(-50vw + 50%);
-    background-image: url(./Asset/bilbo\'s\ birthday.jpg);
-    background: linear-gradient(45deg, #228B22, #32CD32);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background-image: url("./Asset/bilbosBirthday.jpg");
+    background-size: contain, contain;
+    background-position: center, center;
+    background-repeat: repeat, repeat;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
@@ -46,7 +45,7 @@ body {
 .bilboImgBanner::after{
     content: "🍰🥧🍖🍞🍯🧀🍇🥖🍗🥓🫖🧀🍰🥧🍖🍞🍯🧀🍇🥖🍗🥓🫖🧀🍰🥧🍖🍞🍯🧀🍇🥖🍗🥓🫖🧀🍰🥧🍖🍞🍯🧀🍇🥖🍗🥓🫖🧀🍰🥧🍖🍞🍯🧀🍇🥖🍗🥓🫖🧀";
     position: absolute;
-    top: 40px;
+    top: 0px;
     left: 0;
     width: 500%;
     font-size: 1.8rem;
@@ -66,10 +65,10 @@ body {
     max-width: 1000px;
     padding: 20px;
     margin: 20px 10px;
-    background-color: linear-gradient(135deg, 
+    background: linear-gradient(135deg, 
         rgba(212, 239, 214, 0.95), 
-        rgba(200, 230, 202, 0.9));;
-    border: 3px solid blur(#ffffff47);
+        rgba(200, 230, 202, 0.9)) !important;
+    border: 3px solid blur(#ffffff47) !important;
     border-radius: 20px;
     box-shadow: 0 0 30px #00000006;
     color: #2d4a3e;
@@ -83,7 +82,7 @@ body {
     left: -10px;
     right: -10px;
     bottom: -10px;
-    background: linear-gradient(45deg, #8B4513, #CD853F, #DAA520, #CD853F, #8B4513);
+    background: linear-gradient(45deg, #8B4513, #CD853F, #DAA520, #CD853F, #8B4513) !important;
     border-radius: 25px;
     z-index: -1;
     opacity: 0.3;
@@ -184,10 +183,14 @@ body {
 
 /*LEGEND ET CONTROLS*/
 .legend-controlsContainer{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-wrap: wrap;
     gap: 20px;
     margin: 15px 0;
+}
+.legend-controlsContainer > div {
+    flex: 1;
+    min-width: 250px;
 }
 
 /*légende du jeu*/
@@ -292,6 +295,7 @@ body {
     justify-content: center;
     align-items: center;
     margin: 20px 0;
+    width: 100%;
 }
 
 #gameBoard{
@@ -301,18 +305,15 @@ body {
     background: #4a6b4d;
     padding: 10px;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 60vw;
+    max-width: 800px;
     /*dimension dynamique en javascript*/
 }
 
 /*LES CELLULES DU JEU*/
 .cell{
-    background: #5a7b5d;
-    width: 6vw;
-    height: 6vh;
-    min-height: 25px;
-    min-width: 25px;
-    max-width: 80px;
-    max-height: 80px;
+    background: hsl(125, 15%, 42%);
+    width: 100%;
     border: 1px solid #163817;
     display: flex;
     align-items: center;
@@ -320,25 +321,41 @@ body {
     font-size: 0; /*on enlève les émojis pour remplacer par les assets*/
     transition: all 0.1s ease;
     border-radius: 3px;
+    background: #5a7b5a;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     position: relative;
+    aspect-ratio: 1/1; /*ratio 1:1 carrés*/
 }
 
 /*style des cellules*/
+.cell.frodo-sprites.character-background{
+    background: linear-gradient(135deg, #DAA520, #B8860B, #CD853F) !important;
+    border: 2px solid #8B4513 !important;
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.6) !important;
+}
 .cell.empty{
     background: #8B4513;
     border-color: #4a332d;
     /* cell.textContent = "🌱"; //on ajoute une valeur emoji au texte*/
     transition: all 0.1s ease;
 }
+.cell.empty.grass{
+    background-image: url("./Asset/grass.png") !important;
+    background-size: 300% 300% !important;
+    background-position: 50% 0% !important;
+    background-color: #7e9b5e !important;
+}
 .cell.tree{
-    background: #228B22;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    background: #053112;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.779);
     /* cell.textContent = "🌳"; */
     transition: all 0.1s ease;
 }
 .cell.target{
-    background: #ffd700;
-    border: 2px solid #B8860B;
+    background: #e5b773ec;
+    border: 2px solid #791303;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     transition: opacity 0.1s ease;
     /* cell.textContent = "🪑";*/
@@ -356,32 +373,24 @@ body {
     }
 }
 .cell.frodo{
-    background: #2b7f46;
     border: 3px solid #163817;
-    z-index: 10;
-    box-shadow: 0 0 15px rgba(11, 45, 20, 0.7);
+    z-index: 1;
     transform: scale(1.1);
     /* cell.textContent = "🧑🏽‍🌾";*/
     transition: all 0.1s ease;
 }
 .cell.friend{
-    background: #e7bce7;
     border: 2px solid #351638;
-    box-shadow: 0 0 8px rgba(221, 160, 221, 0.5);
     /* cell.textContent = "👤"; */
     transition: all 0.1s ease;
 }
-.cell.friend.onTarget{
-    background: #90ee90;
-    border: 3px solid #228B22;
-    box-shadow: 0 0 15px rgba(144, 238, 144, 0.8);
-    /* cell.textContent = "🎉";*/
-}
 
 /*SPRITESHEET PERSONNAGES*/
-.cell.characters{
-    background-image: url("./Asset/friends.png");
+.cell.characters.friend{
+    background-image: url("./Asset/friends.png") !important;
     background-size: 400% 100%; /*4 colonnes de 1 ligne*/
+    z-index: 5;
+    position: relative;
 }
 .cell.friend.gandalf{
     background-position: 0% 0%; /*premier personnage*/
@@ -396,27 +405,60 @@ body {
     background-position: 100% 0%; /*quatrième personnage*/
 }
 
+/*UN AMI ATTEINT LE BANQUET*/
+.cell.friend.onTarget{
+    background-image: url("./Asset/winFriends.png") !important;
+    background-size: 400% 100% !important;
+    border: 3px solid #228B22 !important;
+    box-shadow: 0 0 15px rgba(144, 238, 144, 0.8) !important;
+    animation: friendOnTarget 1.5s infinite alternate;
+    /* cell.textContent = "🎉";*/
+}
+@keyframes friendOnTarget {
+    0%{
+        box-shadow: 0 0 15px rgba(144, 238, 144, 0.8);
+    }
+    100%{
+        box-shadow: 0 0 25px rgba(144, 238, 144, 1);
+    }
+}
+.cell.friend.merry.onTarget{
+    background-position: 0% 0%; /*premier personnage*/
+}
+.cell.friend.pippin.onTarget{
+    background-position: 33.33% 0%; /*deuxième personnage*/
+}
+.cell.friend.gandalf.onTarget{
+    background-position: 66.66% 0%; /*troisième personnage*/
+}
+.cell.friend.sam.onTarget{
+    background-position: 100% 0%; /*quatrième personnage*/
+}
+
 /*SPRITESHEET FRODO DANS 4 DIRECTIONS*/
-.cell.frodo-sprites{
-    background-image: url("./Asset/frodo.png");
-    background-size: 400% 100%;
+.cell.frodo-sprites.frodo{
+    background-image: url("./Asset/frodo.png") !important;
+    background-size: 400% 100% !important;
+    border: 3px solid #163817 !important;
+    z-index: 10 !important;
+    transform: scale(1.1) !important;
 }
-.cell.frodo.up{
-    background-position: 0% 0%; /*vers le haut*/
+.cell.frodo-sprites.frodo.up{
+    background-position: 0% 0% !important; /*vers le haut*/
 }
-.cell.frodo.down{
-    background-position: 33.33% 0%; /*vers le bas*/
+.cell.frodo-sprites.frodo.down{
+    background-position: 33.33% 0% !important; /*vers le bas*/
 }
-.cell.frodo.left{
-    background-position: 66.66% 0%; /*vers la gauche*/
+.cell.frodo-sprites.frodo.left{
+    background-position: 66.66% 0% !important; /*vers la gauche*/
 }
-.cell.frodo.right{
-    background-position: 100% 0%; /*vers la droite*/
+.cell.frodo-sprites.frodo.right{
+    background-position: 100% 0% !important; /*vers la droite*/
 }
 
 /*SPRITESHEET SOL*/
 .cell.grass{
-    background-image: url("./Asset/grass.png");
+    background-image: url("./Asset/grass.png") !important;
     background-size: 300% 300%; /*3 colonnes de 3 ligne*/
 }
 .cell.empty.flowers{
@@ -424,10 +466,6 @@ body {
 }
 .cell.empty.flowers2{
     background-position: 100% 50%; /*variante de l'herbe avec fleurs au milieu à droite*/
-}
-.cell.empty{
-    background-position: 50% 0%; /*herbe sans fleurs de taille normale en haut au milieu*/
-    border-color: #4a332d; /*bordure plus claire pour de l'herbe normale*/
 }
 .cell.empty.variant1{
     background-position: 100% 0%; /*variante 1 de l'herbe en haut à droite*/
@@ -450,7 +488,7 @@ body {
 
 /*SPRITESHEET DES TABLES*/
 .cell.tables{
-    background-image: url("./Asset/tables.png");
+    background-image: url("./Asset/tables.png") !important;
     background-size: 100% 400%; /*1 colonne de 4 ligne*/
 }
 .cell.target.table1{
@@ -468,11 +506,11 @@ body {
 
 /*SPRITESHEET DES ARBRES*/
 .cell.trees{
-    background-image: url("./Asset/trees.png");
+    background-image: url("./Asset/trees.png") !important;
     background-size: 400% 200%; /*4 colonne de 2 lignes*/
 }
 /*les grands arbres*/
-.cell.tree{
+.cell.tree.type1{
     background-position: 0% 0%; /*premier arbre en haut à gauche*/
 }
 .cell.tree.type2{
@@ -485,7 +523,7 @@ body {
     background-position: 100% 0%; /*quatrième arbre en bas à droite*/
 }
 /*les petits arbres*/
-.cell.tree.small{
+.cell.tree.small1{
     background-position: 0% 100%; /*petit arbre en bas à gauche*/
 }
 .cell.tree.small2{
@@ -600,25 +638,20 @@ body {
 /*RESPONSIVE*/
 @media (max-width: 768px) {
     .gameContainer{
-        margin: 20px 10px;
-        padding: 15px;
+        margin: 20px auto;
+        padding: 20px;
     }
     .gameContainer h1{
         font-size: 2.4rem;
         letter-spacing: 1px;
     }
-    
+  
     .bilboImgBanner{
         height: 120px;
     }
     .bilboImgBanner::after{
         font-size: 1.5rem;
-        top: 30px;
-    }
-
-    .youtubeContainer{
-        max-width: 100%;
-        margin: 0 10px;
+        top: 0px;
     }
 
     .storyContent{
@@ -626,18 +659,16 @@ body {
     }
 
     .legend-controlsContainer{
-        grid-template-columns: 1fr;
+        flex-direction: column;
         gap: 15px;
     }
+    .legend-controlsContainer > div {
+        min-width: auto;
+    }
 
-    #gameBoard > div{
-        height: 8vh;
-        width: 8vw;
-        min-width: 22px;
-        min-width: 22px;
-        max-width: 60px;
-        max-height: 60px;
-        font-size: 1.8rem;
+    #gameBoard{
+        width: 40vw;
+        padding: 8px;
     }
 
     #controls{
@@ -649,34 +680,36 @@ body {
         gap: 10px;
     }
 }
-@media (max-width: 480px) {
+
+@media (min-width: 769px) {
     .gameContainer{
-        padding: 10px;
-        margin: 10px 5px;
-    }
-    .gameContainer h1{
-        font-size: 2rem;
+        padding: 20px;
+        margin: 20px auto;
     }
 
     .bilboImgBanner{
-        height: 100px;
+        height: 150px;
     }
     .bilboImgBanner::after{
-        font-size: 1.2rem;
-        top: 8px;
+        font-size: 1.8rem;
+        top: 0px;
     }
 
-    .youtubeContainer{
-        margin: 0 5px;
+    .storyContent{
+        grid-template-columns: 1fr 1fr;
     }
 
-    #gameBoard > div{
-        height: 7vh;
-        width: 7vw;
-        min-width: 18px;
-        min-height: 18px;
-        max-width: 45px;
-        max-height: 45px;
-        font-size: 1.4rem;
+    #gameBoard{
+        width: 60vw;
+        padding: 10px;
+    }
+
+    #controls{
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .gameState{
+        flex-direction: row;
     }
 }

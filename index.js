@@ -38,6 +38,9 @@ let friends = []; //tableau vide qui contiendra les amis de frodon
 let targets = []; //tableau vide qui contiendra les cibles
 let steps = 0; //compteur de pas effectués par frodon
 
+/*VARIABLE DE STOCKAGE DE SPRITES FIXES POUR CHAQUE CELLULES*/
+let cellSprites = []; //tableau 2D qui stock les types de sprites a chaque cellule
+
 /*VARIABLE D'AFFICHAGE POPUP GESTION SELON LE TIMER OU L'AFFICHAGE D'UN NOUVEAU MESSAGE*/
 let popupTimeOut = null;
 
@@ -45,10 +48,10 @@ let popupTimeOut = null;
 let levelCompleted = false; //pour savoir si le niveau est terminé ou non
 
 /*VARIABLE ET CONSTANTES DES SPRITESHEET*/
-let frodoDirection = "up"; //direction initiale de frodon
+let frodoDirection = "down"; //direction initiale de frodon
 
-const FRIEND_TYPES = ["sam", "merry", "pippin", "gandalf"]; //types d'amis de frodon
-const TREE_TYPES = ["type1", "type2", "type3", "small1", "small2", "small3"]; //types d'arbres
+const FRIEND_TYPES = ["gandalf", "pippin", "merry", "sam"]; //types d'amis de frodon
+const TREE_TYPES = ["type1", "type2", "type3", "type4", "small1", "small2", "small3"]; //types d'arbres
 const TABLE_TYPES = ["table1", "table2", "table3", "table4"]; //types de tables du banquet
 const GRASS_TYPES = ["variant1", "variant2", "variant3", "variant4", "variant5", "variant6", "flowers", "flowers2"]; //types de sol
 
@@ -66,6 +69,35 @@ function updateFPS(){
     lastTime = now;
 }
 
+
+//>>>>>>GESTION DES SPRITES FIXES<<<<<<<//
+function generateCellSprites(){
+    cellSprites = [];
+    for (let y = 0; y < gameRow; y++){
+        let row = [];
+        for (let x = 0; x < gameColumn; x++){
+            const cellType = gameGrid[y][x];
+            let spriteData = {};
+
+            //affichage des sprites aléatoires une seule fois
+            switch(cellType){
+                case EMPTY:
+                    spriteData.grassType = GRASS_TYPES[Math.floor(Math.random() * GRASS_TYPES.length)];
+                    break;
+                case TREE: 
+                    spriteData.treeType = TREE_TYPES[Math.floor(Math.random() * TREE_TYPES.length)];
+                    break;
+                }
+
+            //affichage unique pour les tables cibles
+            if (isTargetReached(x, y)){
+                spriteData.tableType = TABLE_TYPES[Math.floor(Math.random() * TABLE_TYPES.length)];
+            }
+            row.push(spriteData);
+        }
+        cellSprites.push(row);
+    }
+}
 
 //>>>>>>CREATION DE LA GRILLE DU JEU<<<<<<<//
 
@@ -109,7 +141,9 @@ function initLevel(levelIndex){
                 //affichage console pour vérifié que frodon est bien positionné
                 console.log(`Frodon positionné en (${x}, ${y})`);
             }else if (cellValue === FRIEND){
-                friends.push({x: x, y: y}); //on ajoute un ami de frodon à la liste des amis
+                //on initialise une constante de type basé sur l'apparition dans le niveau
+                const friendType = FRIEND_TYPES[friends.length % FRIEND_TYPES.length];
+                friends.push({x: x, y: y, type: friendType}); //on ajoute un ami de frodon à la liste des amis
                 row.push(FRIEND); //on ajoute l'ami de frodon à la ligne
                 //affichage console pour vérifié que l'ami est bien positionné
                 console.log(`Ami positionné en (${x}, ${y})`)
@@ -124,6 +158,9 @@ function initLevel(levelIndex){
         }
         gameGrid.push(row); //on ajoute la ligne au tableau 2D
     }
+    //on génère les sprites fixes
+    generateCellSprites();
+
     //affichage console le niveau chargé avec succès
     console.log(`Niveau ${levelIndex} chargé avec succès`);
     showMessage(`Level ${levelIndex + 1} loaded successfully!`);
@@ -142,9 +179,17 @@ function createGrid(){
     //on configure la grille css
     gameBoard.style.gridTemplateColumns = `repeat(${gameColumn}, 1fr)`; //le nombre de colonnes est égal à la largeur du jeu
     gameBoard.style.gridTemplateRows = `repeat(${gameRow}, 1fr)`; //le nombre de lignes est égal à la hauteur du jeu
-    
+   
+    //on applique les constante de la grlle pour le ratio
+    const aspectRatio = gameColumn / gameRow;
+    if (aspectRatio > 1){
+        gameBoard.style.aspectRatio = `${aspectRatio}/1`;
+    }else{
+        gameBoard.style.aspectRatio = `1/${1/aspectRatio}`;
+    }
+
     let totalCell = gameColumn * gameRow; //on calcule le nombre total de cellules dans la grille
-    for (let i=0; i < totalCell; i++){ //on parcours chaque cellule
+    for (let i = 0; i < totalCell; i++){ //on parcours chaque cellule
         const cell = document.createElement("div"); //on crée un nouvel élément HTML div pour une cellule
         cell.className = "cell"; //on ajoute une classe css pour chaque cellule individuelle
         cell.id = `cell-${i}`; //on ajoute un ID a chaque cellule
@@ -188,7 +233,8 @@ function draw(){
             //on vérifie si la cellule est une cible pour l'afficher en arrière plan
             const isTarget = isTargetReached(x, y); //on vérifie si la cellule est une cible
             if (isTarget){
-                const tableType = TABLE_TYPES[Math.floor(Math.random() * TABLE_TYPES.length)]; //on choisit un type de table aléatoire
+                const spriteData = cellSprites[y] && cellSprites[y][x];
+                const tableType = cellSprites[y][x].tableType; //on stock le sprite cible fixe généré
                 cell.classList.add("tables","target", tableType); //on ajoute les classes css pour la cible et le type de table
                 /*cell.classList.add("target");
                 cell.textContent = "🪑"; //on ajoute un émoji cible */
@@ -200,26 +246,29 @@ function draw(){
             switch (cellType){
                 case EMPTY: //si la cellule est vide
                     if (!isTarget){ //si la cellule n'est pas une cible on affiche comme même la cible plus les cellule du sol
-                        const grassType = GRASS_TYPES[Math.floor(Math.random() * GRASS_TYPES.length)]; //on choisit un type de sol aléatoire
+                        const spriteData = cellSprites[y] && cellSprites[y][x];
+                        const grassType = cellSprites[y][x].grassType; //on stock le sprite fixe généré
                         cell.classList.add("grass", "empty", grassType); //on ajoute les classes css pour le sol et le type de sol
                         /*cell.classList.add("empty"); //on ajoute la classe css empty
                         cell.textContent = "🌱"; //on ajoute une valeur emoji au texte*/
                     }
                     break;
                 case TREE: //si c'est un arbre
-                    const treeType = TREE_TYPES[Math.floor(Math.random() * TREE_TYPES.length)];//on choisit un type d'arbre aléatoire
+                    const spriteData = cellSprites[y] && cellSprites[y][x];
+                    const treeType = cellSprites[y][x].treeType; //on stock le sprite fixe généré
                     cell.classList.add("trees","tree", treeType); //on ajoute les classes css pour l'arbre et le type d'arbre
                     /*cell.classList.add("tree"); 
                     cell.textContent = "🌳";*/
                     break;
                 case FRIEND: //si c'est un ami de frodon
                     //on donne un type d'ami basé sur l'index de l'ami
-                    const friendIndex = friends.findIndex(friend => friend.x === x && friend.y === y); //on cherche l'ami dans le tableau
-                    const friendType = FRIEND_TYPES[friendIndex % FRIEND_TYPES.length]; //on choisit un type d'ami aléatoire
+                    const friend = friends.find(friend => friend.x === x && friend.y === y); //on cherche l'ami dans le tableau
+                    const friendType = friend ? friend.type : FRIEND_TYPES[0]; //on affiche l'ami chargé initialement
                     
                     cell.classList.add("characters", "friend", friendType); //on ajoute les classes css pour l'ami et le type d'ami
+                    cell.classList.add("character-background"); //on ajoute la classe pou le fond doré
                     /*cell.classList.add("friend"); //affichage antérieur pour les émojis*/
-
+                    
                     //on vérifie si l'ami est sur une cible
                     if (isTarget){
                         cell.classList.add("onTarget");
@@ -235,7 +284,11 @@ function draw(){
             }
             //si c'est frodon, on ajoute une classe css et un emoji
             if (x === frodoX && y === frodoY){
-                cell.classList.add("frodo-sprites", "frodo", frodoDirection); //on ajoute les classes css pour frodon
+                //on efface toute les autres classes de personnage
+                cell.classList.remove("friend", "sam", "merry", "pippin", "gandalf");
+                //on ajoute les classes css pour frodon
+                cell.classList.add("frodo-sprites", "frodo", frodoDirection);
+                cell.classList.add("character-background"); //on ajoute aussi le fond doré
                 /*cell.classList.add("frodo"); //on ajoute la classe css frodo
                 cell.textContent = "🧑🏽‍🌾"; //on ajoute un émoji*/
             }
@@ -244,7 +297,9 @@ function draw(){
     //affichage console pour vérifié que le jeu est dessiné
     console.log("Jeu dessiné avec succès");
     updateDebugInfo(); //on met à jour les informations en console pour le débogage
-    updateFPS(); //on met à jour le compteur FPS
+    if (Date.now() % 10 === 0){
+        updateFPS(); //on met à jour le compteur FPS
+    }
 }
 
 
@@ -309,16 +364,22 @@ function pushFriend(friendX, friendY, dx, dy){
     }
 
     //déplacement de l'ami
-    gameGrid[friendY][friendX] = EMPTY; //on place une case vide du sol là où l'ami était
-    gameGrid[pushY][pushX] = FRIEND; //l'ami est déplacé à la nouvelle position
-
     //on met à jour la position de l'ami
     const friendIndex = friends.findIndex(friend => friend.x === friendX && friend.y === friendY); //on cherche l'ami dans le tableau
     if (friendIndex !== -1){ //si l'ami est différent de non trouvé
         friends[friendIndex].x = pushX; //on met à jour la position en colonne
         friends[friendIndex].y = pushY; //on met à jour la position en ligne
         console.log(`Ami déplacé en (${pushX}, ${pushY})`) //on affiche la nouvelle position dans la console
+    }else{
+        console.error("l'ami de frodon n'a pas été trouvé dans le tableau friends");
+        return false;
     }
+    
+    //si c'est une cible on garde target mais on met à jour la position de l'ami
+    const oldCellType = isTargetReached(friendX, friendY) ? TARGET : EMPTY; //on remet le bon type d'ami au bon endroit
+    gameGrid[friendY][friendX] = oldCellType;
+
+    gameGrid[pushY][pushX] = FRIEND; //on déplace l'ami à la nouvelle position
 
     //frodon prend la place de l'ami
     frodoX = friendX;
