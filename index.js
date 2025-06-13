@@ -38,11 +38,6 @@ let friends = []; //tableau vide qui contiendra les amis de frodon
 let targets = []; //tableau vide qui contiendra les cibles
 let steps = 0; //compteur de pas effectués par frodon
 
-/*VARRIABLES D'ANIMATION*/
-let animationInterval; 
-let timeStamp = 0; //mise à jour du dernier mouvement
-let animationPaused = false; //animation en pause ou en cours
-
 /*VARIABLE D'AFFICHAGE POPUP GESTION SELON LE TIMER OU L'AFFICHAGE D'UN NOUVEAU MESSAGE*/
 let popupTimeOut = null;
 
@@ -56,6 +51,20 @@ const FRIEND_TYPES = ["sam", "merry", "pippin", "gandalf"]; //types d'amis de fr
 const TREE_TYPES = ["type1", "type2", "type3", "small1", "small2", "small3"]; //types d'arbres
 const TABLE_TYPES = ["table1", "table2", "table3", "table4"]; //types de tables du banquet
 const GRASS_TYPES = ["variant1", "variant2", "variant3", "variant4", "variant5", "variant6", "flowers", "flowers2"]; //types de sol
+
+//>>>>>>COMPTEUR FPS<<<<<<<//
+let fpsCounter = 0;
+let lastTime = performance.now();
+
+function updateFPS(){
+    const now = performance.now();
+    const delta = now - lastTime;
+    if (delta > 0){
+        fpsCounter = Math.round(1000 / delta);
+        document.getElementById("fpsCounter").textContent = `FPS: ${fpsCounter}`;
+    }
+    lastTime = now;
+}
 
 
 //>>>>>>CREATION DE LA GRILLE DU JEU<<<<<<<//
@@ -77,8 +86,8 @@ function initLevel(levelIndex){
     levelCompleted = false; //on réinitialise l'état du niveau à non terminé
     
     //calcul des dimensions du niveau
-    gameRow = levelData.length; //nombre de lignes du niveau
-    gameColumn = levelData[0].length; //mise à jour de la largeur du jeu
+    gameRow = Math.min(levelData.length, GRID_HEIGHT); //nombre de lignes du niveau
+    gameColumn = Math.min(levelData[0].length, GRID_WIDTH); //mise à jour de la largeur du jeu
 
     //réinitialisation des variables du jeu
     gameGrid = []; //on vide la grille
@@ -175,7 +184,6 @@ function draw(){
 
             //on réinitialise le contenu de chaque celllule
             cell.className = "cell"; //on reprend les styles de base de la cellule
-            cell.textContent = ""; //on réinitialise le texte de la cellule
 
             //on vérifie si la cellule est une cible pour l'afficher en arrière plan
             const isTarget = isTargetReached(x, y); //on vérifie si la cellule est une cible
@@ -236,6 +244,7 @@ function draw(){
     //affichage console pour vérifié que le jeu est dessiné
     console.log("Jeu dessiné avec succès");
     updateDebugInfo(); //on met à jour les informations en console pour le débogage
+    updateFPS(); //on met à jour le compteur FPS
 }
 
 
