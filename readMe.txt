@@ -41,7 +41,7 @@ pause
 # USAGE:
 # ==========================================
 # 1. Copy the script corresponding to your OS
-# 2. Place it in your BOXXLE folder
+# 2. Place it in your BOXXLE folder on shell
 # 3. Double-click it to start
 # 4. Go to http://localhost:8000
 
@@ -96,7 +96,7 @@ pause
 # UTILISATION :
 # ==========================================
 # 1. Copiez le script correspondant à votre OS
-# 2. Placez-le dans votre dossier BOXXLE
+# 2. Placez-le dans votre dossier BOXXLE sur le shell
 # 3. Double-cliquez dessus pour démarrer
 # 4. Allez sur http://localhost:8000
 
